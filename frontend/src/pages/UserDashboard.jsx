@@ -145,17 +145,20 @@ export default function UserDashboard({ user, onLogout }) {
           <CardContent>
             <form onSubmit={handleRequestCard} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="amount">Сумма (UAH)</Label>
+                <Label htmlFor="amount">Сумма в USDT</Label>
                 <Input
                   id="amount"
                   type="number"
                   step="0.01"
-                  placeholder="1000"
+                  placeholder="100"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   required
                   data-testid="request-amount-input"
                 />
+                <p className="text-xs text-gray-500">
+                  Укажите сколько USDT вы хотите получить
+                </p>
               </div>
               <Button type="submit" disabled={loading} className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700" data-testid="request-card-button">
                 {loading ? 'Запрос...' : 'Получить реквизиты'}

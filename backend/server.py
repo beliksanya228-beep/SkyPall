@@ -180,6 +180,10 @@ async def login(data: UserLogin):
     if not user or not verify_password(data.password, user['password_hash']):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
+    # Check if user is blocked
+    if user.get('is_blocked', False):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is blocked")
+    
     token = create_token(user['id'], user['email'], user['role'])
     return {"token": token, "user": {"id": user['id'], "email": user['email'], "role": user['role']}}
 

@@ -1,0 +1,117 @@
+{
+  "test_results": {
+    "total": 25,
+    "passed": 23,
+    "failed": 2,
+    "success_rate": 92.0
+  },
+  "failed_tests": [
+    {
+      "test": "Unauthorized access to admin",
+      "expected": 401,
+      "actual": 403,
+      "endpoint": "admin/traders"
+    },
+    {
+      "test": "Request card with invalid amount",
+      "expected": 400,
+      "actual": 200,
+      "endpoint": "user/request-card"
+    }
+  ],
+  "test_data": {
+    "admin_profile": {
+      "id": "8075695d-8c44-43b8-9736-a9ff4a8c01d0",
+      "email": "admin@test.com",
+      "role": "admin",
+      "trader": null
+    },
+    "trader_profile": {
+      "id": "70ef0dd2-6626-4a4f-b34b-2b589deab293",
+      "email": "trader@test.com",
+      "role": "trader",
+      "trader": {
+        "id": "d2ccd73a-4e41-46f6-8924-59beb6656dda",
+        "user_id": "70ef0dd2-6626-4a4f-b34b-2b589deab293",
+        "name": "\u0418\u0432\u0430\u043d \u041f\u0435\u0442\u0440\u043e\u0432",
+        "nickname": "trader_ivan",
+        "usdt_address": "TRXabcd1234567890",
+        "phone": "+380991234567",
+        "usdt_balance": 10000.0,
+        "is_blocked": false,
+        "created_at": "2025-10-22T12:43:56.189905+00:00"
+      }
+    },
+    "user_profile": {
+      "id": "3d155c46-8d79-4a50-aab3-5761dd898537",
+      "email": "user@test.com",
+      "role": "user",
+      "trader": null
+    },
+    "transaction_id": "6975d33a-91ea-4ac3-aadf-168c334823b6",
+    "card_details": {
+      "bank_name": "\u041f\u0440\u0438\u0432\u0430\u0442\u0411\u0430\u043d\u043a",
+      "card_number": "4149 6293 1234 5678",
+      "holder_name": "IVAN PETROV",
+      "amount": 1000.0,
+      "currency": "UAH"
+    },
+    "trader_cards": [
+      {
+        "id": "7fb4b829-4ad9-41ab-873f-9a309b92731d",
+        "trader_id": "d2ccd73a-4e41-46f6-8924-59beb6656dda",
+        "card_number": "4149 6293 1234 5678",
+        "bank_name": "\u041f\u0440\u0438\u0432\u0430\u0442\u0411\u0430\u043d\u043a",
+        "holder_name": "IVAN PETROV",
+        "limit": 50000.0,
+        "current_usage": 1000.0,
+        "status": "active",
+        "currency": "UAH",
+        "created_at": "2025-10-22T12:43:56.212204+00:00"
+      }
+    ],
+    "trader_transactions": [
+      {
+        "id": "6975d33a-91ea-4ac3-aadf-168c334823b6",
+        "user_id": "3d155c46-8d79-4a50-aab3-5761dd898537",
+        "trader_id": "d2ccd73a-4e41-46f6-8924-59beb6656dda",
+        "card_id": "7fb4b829-4ad9-41ab-873f-9a309b92731d",
+        "amount": 1000.0,
+        "currency": "UAH",
+        "status": "user_confirmed",
+        "created_at": "2025-10-22T12:45:48.092912+00:00",
+        "user_confirmed_at": "2025-10-22T12:45:48.288037+00:00",
+        "completed_at": null,
+        "expires_at": "2025-10-22T13:15:48.092923+00:00",
+        "card": {
+          "id": "7fb4b829-4ad9-41ab-873f-9a309b92731d",
+          "trader_id": "d2ccd73a-4e41-46f6-8924-59beb6656dda",
+          "card_number": "4149 6293 1234 5678",
+          "bank_name": "\u041f\u0440\u0438\u0432\u0430\u0442\u0411\u0430\u043d\u043a",
+          "holder_name": "IVAN PETROV",
+          "limit": 50000.0,
+          "current_usage": 1000.0,
+          "status": "active",
+          "currency": "UAH",
+          "created_at": "2025-10-22T12:43:56.212204+00:00"
+        }
+      }
+    ],
+    "pending_transaction": "6975d33a-91ea-4ac3-aadf-168c334823b6",
+    "all_traders": [
+      {
+        "id": "d2ccd73a-4e41-46f6-8924-59beb6656dda",
+        "user_id": "70ef0dd2-6626-4a4f-b34b-2b589deab293",
+        "name": "\u0418\u0432\u0430\u043d \u041f\u0435\u0442\u0440\u043e\u0432",
+        "nickname": "trader_ivan",
+        "usdt_address": "TRXabcd1234567890",
+        "phone": "+380991234567",
+        "usdt_balance": 9010.0,
+        "is_blocked": false,
+        "created_at": "2025-10-22T12:43:56.189905+00:00",
+        "email": "trader@test.com"
+      }
+    ],
+    "first_trader_id": "d2ccd73a-4e41-46f6-8924-59beb6656dda"
+  }
+}

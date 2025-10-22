@@ -95,6 +95,28 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await api.post('/admin/users/create', userForm);
+      setCreatedUserData(response.data.user);
+      toast.success('Аккаунт создан!');
+      setUserForm({ email: '', password: '', role: 'user' });
+      loadAdminData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка создания аккаунта');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseCreatedUser = () => {
+    setCreatedUserData(null);
+    setShowCreateUser(false);
+  };
+
   const handleUpdateSettings = async (e) => {
     e.preventDefault();
     setLoading(true);

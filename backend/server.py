@@ -484,7 +484,7 @@ async def get_all_transactions(user: dict = Depends(require_admin)):
 async def get_settings(user: dict = Depends(require_admin)):
     settings = await db.settings.find_one({}, {"_id": 0})
     if not settings:
-        settings = {"commission_rate": 1.0}
+        settings = {"commission_rate": 9.0, "usd_to_uah_rate": 41.5}
         await db.settings.insert_one(settings)
     return settings
 

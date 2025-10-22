@@ -92,8 +92,8 @@ class CardUpdate(BaseModel):
     status: Optional[str] = None
 
 class TransactionRequest(BaseModel):
-    amount: float
-    currency: str = "UAH"
+    amount: float  # Amount in USDT user wants to receive
+    currency: str = "UAH"  # Payment currency
 
 class Transaction(BaseModel):
     model_config = ConfigDict(extra="ignore")

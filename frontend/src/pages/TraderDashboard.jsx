@@ -15,8 +15,10 @@ export default function TraderDashboard({ user, onLogout, onUpdate }) {
   const [cards, setCards] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [stats, setStats] = useState(null);
+  const [depositWallet, setDepositWallet] = useState('');
   const [showBecomeTrader, setShowBecomeTrader] = useState(false);
   const [showAddCard, setShowAddCard] = useState(false);
+  const [showDepositInfo, setShowDepositInfo] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Become Trader Form

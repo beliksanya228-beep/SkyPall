@@ -401,6 +401,63 @@ export default function TraderDashboard({ user, onLogout, onUpdate }) {
             )}
           </CardContent>
         </Card>
+
+        {/* Deposit Info Dialog */}
+        <Dialog open={showDepositInfo} onOpenChange={setShowDepositInfo}>
+          <DialogContent className="max-w-lg" data-testid="deposit-dialog">
+            <DialogHeader>
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                <Wallet className="h-6 w-6 text-green-600" />
+                Пополнение USDT баланса
+              </DialogTitle>
+              <DialogDescription>
+                Переведите USDT (TRC-20) на указанный адрес
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-lg border-2 border-green-200">
+                <Label className="text-sm text-gray-600 mb-2 block">TRC-20 адрес кошелька:</Label>
+                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                  <code className="text-sm font-mono break-all select-all" data-testid="wallet-address">
+                    {depositWallet}
+                  </code>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-3 w-full"
+                  onClick={() => {
+                    navigator.clipboard.writeText(depositWallet);
+                    toast.success('Адрес скопирован!');
+                  }}
+                  data-testid="copy-wallet-button"
+                >
+                  Скопировать адрес
+                </Button>
+              </div>
+
+              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <p className="text-sm text-yellow-800 font-semibold mb-2">⚠️ Важно:</p>
+                <ul className="text-sm text-yellow-700 space-y-1 list-disc list-inside">
+                  <li>Используйте только сеть TRC-20 (TRON)</li>
+                  <li>После перевода свяжитесь с администратором</li>
+                  <li>Баланс будет пополнен вручную после проверки</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800">
+                  <strong>Ваш текущий баланс:</strong> {stats?.balance?.toFixed(2) || '0.00'} USDT
+                </p>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setShowDepositInfo(false)} className="w-full" data-testid="close-deposit-button">
+                Закрыть
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

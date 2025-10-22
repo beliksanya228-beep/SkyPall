@@ -188,9 +188,19 @@ export default function UserDashboard({ user, onLogout }) {
                   <Label className="text-sm text-gray-600">Получатель</Label>
                   <div className="text-lg font-semibold" data-testid="card-holder">{cardDetails.holder_name}</div>
                 </div>
-                <div>
-                  <Label className="text-sm text-gray-600">Сумма</Label>
-                  <div className="text-3xl font-bold text-blue-600" data-testid="card-amount">{cardDetails.amount} {cardDetails.currency}</div>
+                <div className="border-t pt-3 mt-3">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-600">Вы получите USDT:</span>
+                    <span className="font-semibold" data-testid="usdt-amount">{cardDetails.usdt_amount} USDT</span>
+                  </div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-600">Комиссия ({cardDetails.commission_rate}%):</span>
+                    <span className="text-red-600" data-testid="commission-amount">{cardDetails.commission_amount} {cardDetails.currency}</span>
+                  </div>
+                  <div className="flex justify-between items-center mt-2 pt-2 border-t">
+                    <Label className="text-sm text-gray-600">Сумма к оплате:</Label>
+                    <div className="text-3xl font-bold text-blue-600" data-testid="card-amount">{cardDetails.amount} {cardDetails.currency}</div>
+                  </div>
                 </div>
               </div>
               <Button onClick={handleConfirmPayment} className="w-full bg-green-600 hover:bg-green-700" data-testid="confirm-payment-button">

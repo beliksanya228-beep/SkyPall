@@ -222,6 +222,16 @@ export default function TraderDashboard({ user, onLogout, onUpdate }) {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-green-600" data-testid="usdt-balance">{stats.balance?.toFixed(2) || '0.00'}</div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2 w-full"
+                  onClick={() => setShowDepositInfo(true)}
+                  data-testid="deposit-button"
+                >
+                  <Wallet className="h-4 w-4 mr-1" />
+                  Пополнить
+                </Button>
               </CardContent>
             </Card>
 

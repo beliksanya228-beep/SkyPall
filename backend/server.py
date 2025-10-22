@@ -115,6 +115,7 @@ class AdminAddBalance(BaseModel):
 class AdminSettings(BaseModel):
     commission_rate: float  # percentage
     usd_to_uah_rate: float  # 1 USDT = X UAH
+    deposit_wallet_address: str = "TB4K5h9QwFGSYR2LLJS9ejmt9EjHWurvi1"  # TRC-20 wallet for deposits
 
 # ===== AUTH HELPERS =====
 def hash_password(password: str) -> str:

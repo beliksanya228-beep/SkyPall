@@ -76,6 +76,16 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
+  const handleBlockUser = async (userId, isBlocked) => {
+    try {
+      await api.put(`/admin/users/${userId}/block`);
+      toast.success(isBlocked ? 'Пользователь разблокирован' : 'Пользователь заблокирован');
+      loadAdminData();
+    } catch (error) {
+      toast.error('Ошибка блокировки пользователя');
+    }
+  };
+
   const handleUpdateSettings = async (e) => {
     e.preventDefault();
     setLoading(true);

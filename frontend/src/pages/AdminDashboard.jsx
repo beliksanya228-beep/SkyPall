@@ -374,6 +374,21 @@ export default function AdminDashboard({ user, onLogout }) {
                       Текущий курс: 1 USDT = {settings.usd_to_uah_rate} UAH
                     </p>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="wallet">TRC-20 кошелек для пополнений</Label>
+                    <Input
+                      id="wallet"
+                      type="text"
+                      value={settings.deposit_wallet_address || ''}
+                      onChange={(e) => setSettings({ ...settings, deposit_wallet_address: e.target.value })}
+                      required
+                      data-testid="wallet-input"
+                      placeholder="TB4K5h9QwFGSYR2LLJS9ejmt9EjHWurvi1"
+                    />
+                    <p className="text-sm text-gray-500">
+                      Адрес для пополнения баланса трейдерами
+                    </p>
+                  </div>
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h4 className="font-semibold text-sm mb-2">Пример расчета:</h4>
                     <p className="text-sm text-gray-700">

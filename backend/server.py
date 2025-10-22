@@ -308,17 +308,22 @@ async def trader_confirm_payment(transaction_id: str, user: dict = Depends(requi
     if txn['status'] != 'user_confirmed':
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User must confirm payment first")
     
-    # Calculate commission (1%)
+    # Get settings
     settings = await db.settings.find_one({}, {"_id": 0})
-    commission_rate = settings['commission_rate'] if settings else 1.0
-    commission = txn['amount'] * (commission_rate / 100)
-    usdt_to_send = txn['amount'] - commission
+    commission_rate = settings['commission_rate'] if settings else 9.0
+    usd_to_uah_rate = settings['usd_to_uah_rate'] if settings else 41.5
     
-    # Emulate USDT transaction
+    # Calculate amounts
+    # txn['amount'] - это сумма UAH которую пользователь перевел (уже с комиссией)
+    # Нужно вычислить: сколько USDT получит пользователь
+    amount_without_commission = txn['amount'] / (1 + commission_rate / 100)
+    usdt_to_send = amount_without_commission / usd_to_uah_rate
+    
+    # Check trader balance
     if trader['usdt_balance'] < usdt_to_send:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Insufficient USDT balance")
     
-    # Update trader balance
+    # Update trader balance (списываем USDT у трейдера)
     new_balance = trader['usdt_balance'] - usdt_to_send
     await db.traders.update_one({"id": trader['id']}, {"$set": {"usdt_balance": new_balance}})
     
@@ -327,11 +332,17 @@ async def trader_confirm_payment(transaction_id: str, user: dict = Depends(requi
         {"id": transaction_id},
         {"$set": {
             "status": "completed",
-            "completed_at": datetime.now(timezone.utc).isoformat()
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+            "usdt_amount": usdt_to_send
         }}
     )
     
-    return {"message": "Payment confirmed and USDT sent", "usdt_sent": usdt_to_send, "commission": commission}
+    return {
+        "message": "Payment confirmed and USDT sent",
+        "usdt_sent": round(usdt_to_send, 2),
+        "uah_amount": txn['amount'],
+        "rate": usd_to_uah_rate
+    }
 
 # ===== USER ROUTES =====
 @api_router.post("/user/request-card")

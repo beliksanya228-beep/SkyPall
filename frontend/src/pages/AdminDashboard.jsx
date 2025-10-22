@@ -287,10 +287,20 @@ export default function AdminDashboard({ user, onLogout }) {
           <TabsContent value="users">
             <Card className="shadow-lg border-0">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-6 w-6 text-purple-600" />
-                  Все пользователи
-                </CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-6 w-6 text-purple-600" />
+                    Все пользователи
+                  </CardTitle>
+                  <Button
+                    onClick={() => setShowCreateUser(true)}
+                    className="gap-2 bg-gradient-to-r from-blue-500 to-purple-600"
+                    data-testid="create-user-button"
+                  >
+                    <Users className="h-4 w-4" />
+                    Создать аккаунт
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {users.length === 0 ? (

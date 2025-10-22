@@ -477,6 +477,134 @@ export default function AdminDashboard({ user, onLogout }) {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Create User Dialog */}
+        <Dialog open={showCreateUser} onOpenChange={(open) => {
+          setShowCreateUser(open);
+          if (!open) {
+            setCreatedUserData(null);
+            setUserForm({ email: '', password: '', role: 'user' });
+          }
+        }}>
+          <DialogContent className="max-w-lg" data-testid="create-user-dialog">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Создать новый аккаунт</DialogTitle>
+              <DialogDescription>
+                Заполните данные для создания нового пользователя
+              </DialogDescription>
+            </DialogHeader>
+
+            {!createdUserData ? (
+              <form onSubmit={handleCreateUser} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-email">Email</Label>
+                  <Input
+                    id="new-email"
+                    type="email"
+                    value={userForm.email}
+                    onChange={(e) => setUserForm({...userForm, email: e.target.value})}
+                    required
+                    placeholder="user@example.com"
+                    data-testid="new-user-email"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">Пароль</Label>
+                  <Input
+                    id="new-password"
+                    type="text"
+                    value={userForm.password}
+                    onChange={(e) => setUserForm({...userForm, password: e.target.value})}
+                    required
+                    placeholder="Минимум 6 символов"
+                    minLength={6}
+                    data-testid="new-user-password"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new-role">Роль</Label>
+                  <Select value={userForm.role} onValueChange={(value) => setUserForm({...userForm, role: value})}>
+                    <SelectTrigger data-testid="new-user-role">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="user">Пользователь</SelectItem>
+                      <SelectItem value="trader">Трейдер</SelectItem>
+                      <SelectItem value="admin">Администратор</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500">
+                    {userForm.role === 'user' && 'Может запрашивать карты для пополнения'}
+                    {userForm.role === 'trader' && 'Может добавлять карты и обрабатывать платежи'}
+                    {userForm.role === 'admin' && 'Полный доступ к системе'}
+                  </p>
+                </div>
+
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setShowCreateUser(false)}>
+                    Отмена
+                  </Button>
+                  <Button type="submit" disabled={loading} data-testid="submit-create-user">
+                    {loading ? 'Создание...' : 'Создать аккаунт'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <h3 className="text-lg font-semibold text-green-800">Аккаунт успешно создан!</h3>
+                  </div>
+                  
+                  <div className="space-y-3 bg-white p-4 rounded border border-green-200">
+                    <div>
+                      <Label className="text-sm text-gray-600">Email:</Label>
+                      <div className="font-mono text-lg font-semibold" data-testid="created-user-email">{createdUserData.email}</div>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">Пароль:</Label>
+                      <div className="font-mono text-lg font-semibold select-all" data-testid="created-user-password">{createdUserData.password}</div>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">Роль:</Label>
+                      <div className="font-semibold">{createdUserData.role}</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">
+                    <p className="text-sm text-yellow-800">
+                      ⚠️ <strong>Важно:</strong> Сохраните эти данные! Пароль больше не будет показан.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        const text = `Email: ${createdUserData.email}\nПароль: ${createdUserData.password}\nРоль: ${createdUserData.role}`;
+                        navigator.clipboard.writeText(text);
+                        toast.success('Данные скопированы!');
+                      }}
+                      data-testid="copy-credentials-button"
+                    >
+                      Скопировать данные
+                    </Button>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button onClick={handleCloseCreatedUser} className="w-full" data-testid="close-created-user">
+                    Закрыть
+                  </Button>
+                </DialogFooter>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -352,7 +352,8 @@ def main():
     if tester.failed_tests:
         print("\n❌ FAILED TESTS:")
         for failure in tester.failed_tests:
-            print(f"  - {failure['test']}: {failure.get('error', f'Expected {failure.get(\"expected\")}, got {failure.get(\"actual\")}')}")
+            error_msg = failure.get('error', f"Expected {failure.get('expected')}, got {failure.get('actual')}")
+            print(f"  - {failure['test']}: {error_msg}")
     
     # Save test data for debugging
     with open('/app/test_reports/backend_test_data.json', 'w') as f:

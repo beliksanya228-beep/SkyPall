@@ -453,6 +453,19 @@ async def get_all_users(user: dict = Depends(require_admin)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return users
 
+@api_router.put("/admin/users/{user_id}/block")
+async def admin_block_user(user_id: str, admin: dict = Depends(require_admin)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    # Toggle is_blocked field
+    current_blocked = user.get('is_blocked', False)
+    new_status = not current_blocked
+    await db.users.update_one({"id": user_id}, {"$set": {"is_blocked": new_status}})
+    
+    return {"message": "User status updated", "is_blocked": new_status}
+
 @api_router.post("/admin/traders/{trader_id}/add-balance")
 async def admin_add_balance(trader_id: str, data: AdminAddBalance, user: dict = Depends(require_admin)):
     trader = await db.traders.find_one({"id": trader_id}, {"_id": 0})

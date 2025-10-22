@@ -18,7 +18,16 @@ export default function AdminDashboard({ user, onLogout }) {
   const [selectedTrader, setSelectedTrader] = useState(null);
   const [balanceAmount, setBalanceAmount] = useState('');
   const [showAddBalance, setShowAddBalance] = useState(false);
+  const [showCreateUser, setShowCreateUser] = useState(false);
+  const [createdUserData, setCreatedUserData] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  // Create User Form
+  const [userForm, setUserForm] = useState({
+    email: '',
+    password: '',
+    role: 'user'
+  });
 
   useEffect(() => {
     loadAdminData();

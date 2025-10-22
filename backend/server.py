@@ -503,9 +503,21 @@ async def get_all_transactions(user: dict = Depends(require_admin)):
 async def get_settings(user: dict = Depends(require_admin)):
     settings = await db.settings.find_one({}, {"_id": 0})
     if not settings:
-        settings = {"commission_rate": 9.0, "usd_to_uah_rate": 41.5}
+        settings = {
+            "commission_rate": 9.0,
+            "usd_to_uah_rate": 41.5,
+            "deposit_wallet_address": "TB4K5h9QwFGSYR2LLJS9ejmt9EjHWurvi1"
+        }
         await db.settings.insert_one(settings)
     return settings
+
+@api_router.get("/settings/public")
+async def get_public_settings():
+    """Public endpoint for deposit wallet address"""
+    settings = await db.settings.find_one({}, {"_id": 0})
+    if not settings:
+        return {"deposit_wallet_address": "TB4K5h9QwFGSYR2LLJS9ejmt9EjHWurvi1"}
+    return {"deposit_wallet_address": settings.get("deposit_wallet_address", "TB4K5h9QwFGSYR2LLJS9ejmt9EjHWurvi1")}
 
 @api_router.put("/admin/settings")
 async def update_settings(data: AdminSettings, user: dict = Depends(require_admin)):

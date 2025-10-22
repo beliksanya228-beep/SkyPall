@@ -113,6 +113,7 @@ class AdminAddBalance(BaseModel):
 
 class AdminSettings(BaseModel):
     commission_rate: float  # percentage
+    usd_to_uah_rate: float  # 1 USDT = X UAH
 
 # ===== AUTH HELPERS =====
 def hash_password(password: str) -> str:

@@ -351,6 +351,17 @@ async def request_card(data: TransactionRequest, user: dict = Depends(get_curren
     if data.amount <= 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Amount must be positive")
     
+    # Get settings for commission
+    settings = await db.settings.find_one({}, {"_id": 0})
+    commission_rate = settings['commission_rate'] if settings else 9.0
+    usd_to_uah_rate = settings['usd_to_uah_rate'] if settings else 41.5
+    
+    # Calculate amount with commission
+    # Пользователь хочет получить data.amount USDT
+    # Нужно рассчитать сколько UAH он должен перевести
+    uah_without_commission = data.amount * usd_to_uah_rate
+    total_uah = uah_without_commission * (1 + commission_rate / 100)
+    
     # Find available card
     cards = await db.cards.find({
         "status": "active",
@@ -363,19 +374,19 @@ async def request_card(data: TransactionRequest, user: dict = Depends(get_curren
     # Find card with sufficient limit
     available_card = None
     for card in cards:
-        if (card['limit'] - card['current_usage']) >= data.amount:
+        if (card['limit'] - card['current_usage']) >= total_uah:
             available_card = card
             break
     
     if not available_card:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No card with sufficient limit")
     
-    # Create transaction
+    # Create transaction (сохраняем сумму UAH с комиссией)
     txn = Transaction(
         user_id=user['id'],
         trader_id=available_card['trader_id'],
         card_id=available_card['id'],
-        amount=data.amount,
+        amount=round(total_uah, 2),
         currency=data.currency
     )
     await db.transactions.insert_one(txn.model_dump())
@@ -383,11 +394,8 @@ async def request_card(data: TransactionRequest, user: dict = Depends(get_curren
     # Update card usage
     await db.cards.update_one(
         {"id": available_card['id']},
-        {"$set": {"current_usage": available_card['current_usage'] + data.amount}}
+        {"$set": {"current_usage": available_card['current_usage'] + total_uah}}
     )
-    
-    # Get trader info
-    trader = await db.traders.find_one({"id": available_card['trader_id']}, {"_id": 0})
     
     return {
         "transaction_id": txn.id,
@@ -395,8 +403,11 @@ async def request_card(data: TransactionRequest, user: dict = Depends(get_curren
             "bank_name": available_card['bank_name'],
             "card_number": available_card['card_number'],
             "holder_name": available_card['holder_name'],
-            "amount": data.amount,
-            "currency": data.currency
+            "amount": round(total_uah, 2),
+            "currency": data.currency,
+            "usdt_amount": data.amount,
+            "commission_rate": commission_rate,
+            "commission_amount": round(total_uah - uah_without_commission, 2)
         },
         "expires_at": txn.expires_at
     }

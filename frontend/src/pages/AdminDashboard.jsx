@@ -268,18 +268,35 @@ export default function AdminDashboard({ user, onLogout }) {
                   <div className="space-y-3">
                     {users.map((u) => (
                       <div key={u.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg" data-testid="user-item">
-                        <div>
+                        <div className="flex-1">
                           <div className="font-semibold" data-testid="user-email">{u.email}</div>
                           <div className="text-sm text-gray-600">Роль: {u.role}</div>
                           <div className="text-xs text-gray-500">{new Date(u.created_at).toLocaleString('ru-RU')}</div>
+                          {u.is_blocked && (
+                            <span className="inline-block mt-1 px-2 py-1 bg-red-100 text-red-800 rounded text-xs">
+                              Заблокирован
+                            </span>
+                          )}
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          u.role === 'admin' ? 'bg-red-100 text-red-800' :
-                          u.role === 'trader' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {u.role}
-                        </span>
+                        <div className="flex gap-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            u.role === 'admin' ? 'bg-red-100 text-red-800' :
+                            u.role === 'trader' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {u.role}
+                          </span>
+                          {u.role !== 'admin' && (
+                            <Button
+                              size="sm"
+                              variant={u.is_blocked ? 'default' : 'destructive'}
+                              onClick={() => handleBlockUser(u.id, u.is_blocked)}
+                              data-testid="block-user-button"
+                            >
+                              <Ban className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

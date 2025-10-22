@@ -335,6 +335,10 @@ async def trader_confirm_payment(transaction_id: str, user: dict = Depends(requi
 # ===== USER ROUTES =====
 @api_router.post("/user/request-card")
 async def request_card(data: TransactionRequest, user: dict = Depends(get_current_user)):
+    # Validate amount
+    if data.amount <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Amount must be positive")
+    
     # Find available card
     cards = await db.cards.find({
         "status": "active",

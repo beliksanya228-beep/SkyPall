@@ -58,16 +58,18 @@ export default function TraderDashboard({ user, onLogout, onUpdate }) {
 
   const loadTraderData = async () => {
     try {
-      const [profileRes, cardsRes, txRes, statsRes] = await Promise.all([
+      const [profileRes, cardsRes, txRes, statsRes, settingsRes] = await Promise.all([
         api.get('/trader/profile'),
         api.get('/trader/cards'),
         api.get('/trader/transactions'),
-        api.get('/stats')
+        api.get('/stats'),
+        api.get('/settings/public')
       ]);
       setTraderProfile(profileRes.data);
       setCards(cardsRes.data);
       setTransactions(txRes.data);
       setStats(statsRes.data);
+      setDepositWallet(settingsRes.data.deposit_wallet_address);
     } catch (error) {
       console.error('Error loading trader data:', error);
     }

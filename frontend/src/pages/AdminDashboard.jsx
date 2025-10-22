@@ -339,7 +339,31 @@ export default function AdminDashboard({ user, onLogout }) {
                       data-testid="commission-input"
                     />
                     <p className="text-sm text-gray-500">
-                      Текущая комиссия: {settings.commission_rate}%
+                      Комиссия добавляется к сумме пополнения
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rate">Курс USDT/UAH (1 USDT = X UAH)</Label>
+                    <Input
+                      id="rate"
+                      type="number"
+                      step="0.01"
+                      value={settings.usd_to_uah_rate}
+                      onChange={(e) => setSettings({ ...settings, usd_to_uah_rate: parseFloat(e.target.value) })}
+                      required
+                      data-testid="rate-input"
+                    />
+                    <p className="text-sm text-gray-500">
+                      Текущий курс: 1 USDT = {settings.usd_to_uah_rate} UAH
+                    </p>
+                  </div>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">Пример расчета:</h4>
+                    <p className="text-sm text-gray-700">
+                      Пользователь хочет получить 100 USDT<br/>
+                      Сумма без комиссии: {(100 * settings.usd_to_uah_rate).toFixed(2)} UAH<br/>
+                      Комиссия: {(100 * settings.usd_to_uah_rate * settings.commission_rate / 100).toFixed(2)} UAH<br/>
+                      <strong>Итого к оплате: {(100 * settings.usd_to_uah_rate * (1 + settings.commission_rate / 100)).toFixed(2)} UAH</strong>
                     </p>
                   </div>
                   <Button type="submit" disabled={loading} className="bg-gradient-to-r from-blue-500 to-purple-600" data-testid="update-settings-button">

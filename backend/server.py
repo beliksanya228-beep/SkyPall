@@ -459,6 +459,40 @@ async def get_all_users(user: dict = Depends(require_admin)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return users
 
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    role: str = "user"  # user, trader, admin
+
+@api_router.post("/admin/users/create")
+async def admin_create_user(data: UserCreate, admin: dict = Depends(require_admin)):
+    # Check if user already exists
+    existing = await db.users.find_one({"email": data.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
+    
+    # Validate role
+    if data.role not in ["user", "trader", "admin"]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role")
+    
+    # Create user
+    new_user = User(
+        email=data.email,
+        password_hash=hash_password(data.password),
+        role=data.role
+    )
+    await db.users.insert_one(new_user.model_dump())
+    
+    return {
+        "message": "User created successfully",
+        "user": {
+            "id": new_user.id,
+            "email": new_user.email,
+            "role": new_user.role,
+            "password": data.password  # Return password for admin to give to user
+        }
+    }
+
 @api_router.put("/admin/users/{user_id}/block")
 async def admin_block_user(user_id: str, admin: dict = Depends(require_admin)):
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
